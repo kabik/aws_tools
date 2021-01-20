@@ -18,20 +18,19 @@ def exec(command):
 
 def main():
     COMMAND_FORMAT = 'aws sts --profile {} get-session-token --serial-number arn:aws:iam::{}:mfa/{} --token-code {}'
-    PROFILE = ''
-    ACCOUNT = ''
-    MAIL = ''
+    print(sys.argv[0])
+    _, profile, aws_account, user_name = sys.argv
 
     print('MFA token > ', end='')
     token = input()
 
-    command = COMMAND_FORMAT.format(PROFILE, ACCOUNT, MAIL, token)
+    command = COMMAND_FORMAT.format(profile, aws_account, user_name, token)
     cred_str = exec(command)
     cred_json = json.loads(cred_str)
 
-    command_access_key_id = 'export AWS_ACCESS_KEY_ID={}'.format(cred_json['Credentials']['AccessKeyId'])
+    command_access_key_id     = 'export AWS_ACCESS_KEY_ID={}'.format(cred_json['Credentials']['AccessKeyId'])
     command_secret_access_key = 'export AWS_SECRET_ACCESS_KEY={}'.format(cred_json['Credentials']['SecretAccessKey'])
-    command_session_token = 'export AWS_SESSION_TOKEN={}'.format(cred_json['Credentials']['SessionToken'])
+    command_session_token     = 'export AWS_SESSION_TOKEN={}'.format(cred_json['Credentials']['SessionToken'])
 
     print(command_access_key_id)
     print(command_secret_access_key)
